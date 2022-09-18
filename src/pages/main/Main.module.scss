@@ -1,0 +1,56 @@
+@import "styles/variables.scss";
+
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: $marg-lg;
+
+  h5 {
+    margin-top: $marg-md;
+    margin-bottom: -#{$marg-sm};
+  }
+
+  p {
+    margin-block: $marg-md;
+    color: var(--text-sub);
+  }
+
+  .card {
+    background: var(--bg-light);
+  }
+
+  .title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .badges-section {
+    display: flex;
+    gap: $marg-xs;
+  }
+
+  .badge {
+    border-color: var(--border);
+
+    &-label {
+      color: var(--text-sub);
+      font-weight: 600;
+    }
+  }
+}
+
+.add-new {
+  border: 2px dashed var(--border);
+  display: flex;
+  gap: $marg-xs;
+  align-items: center;
+  justify-content: center;
+  min-height: 120px;
+  height: 100%;
+
+  svg,
+  span {
+    color: var(--text-sub);
+  }
+}

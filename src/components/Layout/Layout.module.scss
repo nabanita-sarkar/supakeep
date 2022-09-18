@@ -1,0 +1,92 @@
+@import "styles/variables.scss";
+
+.container {
+  display: flex;
+  height: 100vh;
+
+  main {
+    width: calc(100vw - 250px);
+    background-color: var(--bg-dark);
+    transition: width 250ms ease-in-out;
+  }
+  .main-full {
+    @extend main;
+    width: 100vw;
+  }
+  header {
+    // height: 72px;
+    padding: $marg-sm $marg-lg;
+    border-bottom: $border;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .left {
+      display: flex;
+      align-items: center;
+      gap: $marg-lg;
+    }
+
+    .right {
+      display: flex;
+      align-items: center;
+      gap: $marg-lg;
+    }
+  }
+
+  .content {
+    padding: $marg-lg;
+  }
+}
+
+.sidebar {
+  background: var(--bg-light);
+  width: 250px;
+  border-right: $border;
+  display: flex;
+  flex-direction: column;
+  transition: width 250ms ease-in-out, opacity 250ms ease-in-out;
+}
+
+.sidebar-closed {
+  @extend .sidebar;
+  width: 0px;
+  opacity: 0;
+}
+
+.drawer-header {
+  margin: 0px;
+}
+
+.drawer-close {
+  background: var(--bg-light);
+  border: $border;
+  position: absolute;
+  left: #{250px - 16px};
+  top: 16px;
+}
+
+.institute {
+  display: flex;
+  align-items: center;
+  padding: $marg-xl;
+  column-gap: $marg-md;
+}
+
+.user {
+  display: flex;
+  align-items: center;
+  column-gap: $marg-md;
+  margin-inline: -1px;
+  padding: $marg-xl #{$marg-md + 1px};
+  border-top: $border;
+
+  .name {
+    font-weight: 500;
+  }
+  .email {
+    color: var(--text-sub);
+    font-size: $text-sm;
+    word-break: break-all;
+    line-height: 1.1;
+  }
+}

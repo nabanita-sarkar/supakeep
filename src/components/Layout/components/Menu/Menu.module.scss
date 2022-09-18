@@ -1,0 +1,154 @@
+@import "styles/variables.scss";
+
+.menu {
+  flex: 1;
+  padding: 0px $marg-xl;
+
+  display: flex;
+  flex-direction: column;
+
+  &-icon {
+    color: var(--icon);
+    margin-right: $marg-md;
+  }
+
+  &-label {
+    font-weight: 400;
+    font-size: $text-md;
+  }
+
+  .box {
+    height: 12px;
+    width: 12px;
+    border-radius: $radi-sm;
+  }
+}
+
+.menu-item {
+  display: flex;
+  width: 100%;
+
+  &-light {
+    @extend .menu-item;
+    color: var(--gray-500);
+
+    &:hover {
+      background: transparent;
+      color: $primary;
+
+      svg {
+        color: $primary-400;
+      }
+    }
+  }
+
+  &-dark {
+    @extend .menu-item;
+    color: var(--gray-300);
+
+    &:hover {
+      background: transparent;
+      color: $primary-200;
+
+      svg {
+        color: $primary-100;
+      }
+    }
+  }
+}
+
+.menu-item-active {
+  display: flex;
+  width: 100%;
+
+  &-light {
+    @extend .menu-item-active;
+    background: var(--gray-100);
+    color: $primary;
+
+    &:hover {
+      background: var(--gray-200);
+    }
+
+    svg {
+      color: $primary-400;
+    }
+  }
+
+  &-dark {
+    @extend .menu-item-active;
+    background: var(--gray-700);
+    color: $primary-200;
+
+    &:hover {
+      background: var(--gray-600);
+    }
+
+    svg {
+      color: $primary-100;
+    }
+  }
+}
+
+.submenu {
+  border: none;
+
+  &-icon {
+    color: var(--icon);
+    margin-right: $marg-md;
+  }
+  &-chevron {
+    color: var(--gray-400);
+    margin: 0px;
+    width: 16px;
+    min-width: 16px;
+  }
+}
+
+.submenu-control {
+  padding: $marg-sm $marg-md;
+
+  &-light {
+    @extend .submenu-control;
+
+    .submenu-label {
+      color: var(--gray-500);
+      font-size: $text-md;
+    }
+
+    &:hover,
+    &:active {
+      background: transparent;
+
+      .submenu-label {
+        color: $primary;
+      }
+
+      svg {
+        color: $primary-400;
+      }
+    }
+  }
+
+  &-dark {
+    @extend .submenu-control;
+
+    .submenu-label {
+      color: var(--gray-300);
+      font-size: $text-md;
+    }
+
+    &:hover,
+    &:active {
+      background: transparent;
+
+      .submenu-label {
+        color: $primary-200;
+      }
+
+      svg {
+        color: $primary-100;
+      }
+    }
+  }
+}
