@@ -1,0 +1,56 @@
+@import "styles/variables.scss";
+
+.toolbar {
+  display: flex;
+  gap: $marg-sm;
+  flex-wrap: wrap;
+}
+
+.menu {
+  display: flex;
+  background: var(--bg-light);
+  border: $border;
+  padding: $marg-xs;
+  gap: $marg-xs;
+  border-radius: 8px;
+  // & > * {
+  //   // display: inline-block;
+  // }
+
+  // & > * + * {
+  //   // margin-left: 15px;
+  //   // border-left: 1px solid var(--border);
+  // }
+
+  .active {
+    background: var(--border-sub);
+  }
+}
+
+.editor {
+  // width: 400px;
+  margin-top: $marg-xl;
+  background: var(--bg-top);
+  padding: $marg-md;
+  border-radius: 16px;
+
+  .content {
+    padding: $marg-md;
+    blockquote {
+      position: relative;
+      margin-left: 0px;
+      padding: $marg-sm 0 $marg-sm $marg-xl;
+
+      &::before {
+        content: "";
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: 6px;
+        background: var(--icon);
+        height: 100%;
+        border-radius: $radi-sm;
+      }
+    }
+  }
+}

@@ -59,13 +59,13 @@ function Layout() {
       <main className={!isSidebarOpen || width < BREAKPOINTS.md ? styles["main-full"] : ""}>
         <header>
           <div className={styles.left}>
-            <ActionIcon onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
+            <ActionIcon aria-label="Toggle Sidebar" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
               <TbMenu2 />
             </ActionIcon>
             <h4>Notes</h4>
           </div>
           <div className={styles.right}>
-            <ActionIcon onClick={() => toggleColorScheme()}>
+            <ActionIcon aria-label="Toggle theme" onClick={() => toggleColorScheme()}>
               {colorScheme === "dark" ? <TbSun /> : <TbMoonStars />}
             </ActionIcon>
           </div>
