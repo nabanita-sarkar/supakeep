@@ -5,6 +5,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import Layout from "components/Layout";
 // import Login from "pages/login";
 import Main from "pages/main";
+import Note from "pages/note";
 import { useEffect, useState } from "react";
 import { IconContext } from "react-icons";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
@@ -168,6 +169,7 @@ function App() {
                 {/* <Route path="/" element={<Login />} /> */}
                 <Route path="/" element={<Layout />}>
                   <Route index element={<Main />} />
+                  <Route path=":id" element={<Note />} />
                 </Route>
               </Routes>
             </BrowserRouter>

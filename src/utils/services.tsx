@@ -1,9 +1,13 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { addNote, getAllNotes, updateNote } from "./db";
+import { addNote, getAllNotes, getNote, updateNote } from "./db";
 import { Note } from "./types";
 
 export const useAllNotes = () => {
   return useQuery<Note[]>(["all-notes"], getAllNotes);
+};
+
+export const useNote = (id: string) => {
+  return useQuery<Note>(["note", id], () => getNote(id));
 };
 
 export const useAddNote = () => {

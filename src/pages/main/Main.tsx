@@ -62,7 +62,7 @@ function Main() {
     <div>
       <div className={styles.container}>
         {notes.data?.map((note) => (
-          <Card component={Link} to={`/note/${note._id}`} className={styles.card} shadow="sm" key={note._id}>
+          <Card component={Link} to={`/${note._id}`} className={styles.card} shadow="sm" key={note._id}>
             <Card.Section>
               <Pattern id={note._id} />
             </Card.Section>

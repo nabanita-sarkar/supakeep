@@ -10,7 +10,7 @@ export function createDB() {
     console.log("This browser doesn't support IndexedDB.");
     return;
   }
-
+  //   console.log(database.objectStoreNames);
   openDB(DB_NAME, 1, {
     upgrade(database) {
       if (!database.objectStoreNames.contains(NOTE_STORE)) {
@@ -29,15 +29,18 @@ export function createDB() {
 const dbConn = openDB(DB_NAME, 1);
 
 export async function addNote(note: Omit<Note, "_id">) {
-  createDB();
-
   return (await dbConn).add(NOTE_STORE, { ...note, _id: idGen() }).then((val) => val);
 }
 
 export async function getAllNotes() {
+  createDB();
   return (await dbConn).getAll(NOTE_STORE);
 }
 
+export async function getNote(id: string) {
+  return (await dbConn).get(NOTE_STORE, id);
+}
+
 export async function updateNote(note: Note) {
-  return (await dbConn).put(NOTE_STORE, note);
+  return (await dbConn).put(NOTE_STORE, note).then((val) => val);
 }
