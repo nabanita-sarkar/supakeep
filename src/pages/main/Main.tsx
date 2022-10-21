@@ -18,7 +18,7 @@ function AddNewCard() {
 
   return (
     <>
-      <Button variant="white" onClick={() => setIsOpen(true)} className={styles["add-new"]}>
+      <Button onClick={() => setIsOpen(true)} className={styles["add-new"]}>
         <TbPlus />
         <span>Add new note</span>
       </Button>
