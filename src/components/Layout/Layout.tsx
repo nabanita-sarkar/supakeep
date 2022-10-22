@@ -1,7 +1,7 @@
 import { ActionIcon, Avatar, Drawer, useMantineColorScheme } from "@mantine/core";
 import { useViewportSize } from "@mantine/hooks";
 import { useEffect, useState } from "react";
-import { TbLogout, TbMenu2, TbMoonStars, TbSun } from "react-icons/tb";
+import { TbMenu2, TbMoonStars, TbSun } from "react-icons/tb";
 import { Outlet } from "react-router-dom";
 import { BREAKPOINTS } from "styles/theme";
 // import CreateNew from "./components/CreateNew";
@@ -9,10 +9,12 @@ import Menu from "./components/Menu";
 import styles from "./Layout.module.scss";
 
 function SiderContent() {
+  const { colorScheme } = useMantineColorScheme();
+
   return (
     <>
       <div className={styles.institute}>
-        <Avatar size={32} radius="xl" />
+        <Avatar src={`/${colorScheme}-mode.svg`} size={32} radius="xl" />
         <h3>Supakeep</h3>
       </div>
       <Menu />

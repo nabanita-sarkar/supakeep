@@ -1,6 +1,6 @@
 import { MantineProvider, Global, ColorSchemeProvider, ColorScheme } from "@mantine/core";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+// import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 import Layout from "components/Layout";
 // import Login from "pages/login";
@@ -163,7 +163,7 @@ function App() {
         />
         <IconContext.Provider value={{ style: { width: 20, height: 20, verticalAlign: "middle" } }}>
           <QueryClientProvider client={queryClient}>
-            <ReactQueryDevtools initialIsOpen={false} />
+            {/* <ReactQueryDevtools initialIsOpen={false} /> */}
             <BrowserRouter>
               <Routes>
                 {/* <Route path="/" element={<Login />} /> */}
