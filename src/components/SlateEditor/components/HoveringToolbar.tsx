@@ -1,38 +1,39 @@
 import { ActionIcon } from "@mantine/core";
-import { ReactNode, useEffect, useRef } from "react";
+import { forwardRef, MouseEvent, PropsWithChildren, ReactNode, Ref, useEffect, useRef } from "react";
+import { TbBold, TbCode, TbItalic, TbUnderline } from "react-icons/tb";
 import { useFocused, useSlate } from "slate-react";
-import { Portal, ToolsMenu } from ".";
-import {
-  TbAlignCenter,
-  TbAlignJustified,
-  TbAlignLeft,
-  TbAlignRight,
-  TbBold,
-  TbCode,
-  TbGripVertical,
-  TbH1,
-  TbH2,
-  TbItalic,
-  TbList,
-  TbListNumbers,
-  TbPlus,
-  TbQuote,
-  TbUnderline,
-} from "react-icons/tb";
 
-import styles from "../SlateEditor.module.scss";
-import { isMarkActive, toggleMark } from "../functions";
+import { createPortal } from "react-dom";
 import { Editor, Range } from "slate";
+import { isMarkActive, toggleMark } from "../functions";
+import styles from "../SlateEditor.module.scss";
+import { MarkTypes } from "../types";
 
-function MarkButton({ format, icon }: { format: string; icon: ReactNode }) {
+interface BaseProps {
+  className: string;
+  [key: string]: unknown;
+}
+
+const ToolsMenu = forwardRef(function ToolsMenu(
+  { ...props }: PropsWithChildren<BaseProps>,
+  ref: Ref<HTMLDivElement> | undefined
+) {
+  return <div {...props} ref={ref} className={props.className ? `${props.className} ${styles.menu}` : styles.menu} />;
+});
+
+function Portal({ children }: { children: ReactNode }) {
+  return typeof document === "object" ? createPortal(children, document.body) : null;
+}
+
+function MarkButton({ format, icon }: { format: MarkTypes; icon: ReactNode }) {
   const editor = useSlate();
   const isActive = isMarkActive(editor, format);
   return (
     <ActionIcon
       radius="sm"
       className={isActive ? styles.active : ""}
-      onMouseDown={(event: any) => {
-        event.preventDefault();
+      onClick={(event: MouseEvent) => {
+        event?.preventDefault();
         toggleMark(editor, format);
       }}
     >
@@ -74,7 +75,7 @@ function HoveringToolbar() {
       <ToolsMenu
         ref={ref}
         className={styles["hovering-menu"]}
-        onMouseDown={(e: any) => {
+        onMouseDown={(e: MouseEvent) => {
           // prevent toolbar from taking focus away from editor
           e.preventDefault();
         }}

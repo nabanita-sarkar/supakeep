@@ -1,32 +1,9 @@
-import React, { ReactNode, useCallback, useMemo } from "react";
-import isHotkey from "is-hotkey";
-import { Editable, withReact, useSlate, Slate } from "slate-react";
-import { Editor, Transforms, createEditor, Descendant, Element as SlateElement } from "slate";
-import { withHistory } from "slate-history";
+import { Editor, Element as SlateElement, Transforms } from "slate";
 
-import { Toolbar, ToolsMenu } from "./components";
-import { ActionIcon, Checkbox, Menu } from "@mantine/core";
-import {
-  TbAlignCenter,
-  TbAlignJustified,
-  TbAlignLeft,
-  TbAlignRight,
-  TbBold,
-  TbCode,
-  TbGripVertical,
-  TbH1,
-  TbH2,
-  TbItalic,
-  TbList,
-  TbListNumbers,
-  TbPlus,
-  TbQuote,
-  TbUnderline,
-} from "react-icons/tb";
 import { LIST_TYPES, TEXT_ALIGN_TYPES } from "./constants";
-import styles from "./SlateEditor.module.scss";
+import { BlockTypes, CustomEditor, CustomElement, MarkTypes } from "./types";
 
-export const toggleBlock = (editor: any, format: any) => {
+export const toggleBlock = (editor: CustomEditor, format: BlockTypes) => {
   const isActive = isBlockActive(editor, format, TEXT_ALIGN_TYPES.includes(format) ? "align" : "type");
   const isList = LIST_TYPES.includes(format);
 
@@ -34,11 +11,12 @@ export const toggleBlock = (editor: any, format: any) => {
     match: (n) =>
       !Editor.isEditor(n) &&
       SlateElement.isElement(n) &&
-      LIST_TYPES.includes((n as any).type) &&
+      LIST_TYPES.includes(n.type) &&
       !TEXT_ALIGN_TYPES.includes(format),
     split: true,
   });
-  let newProperties: { [key: string]: boolean };
+  let newProperties: { [key: string]: boolean | string | undefined };
+
   if (TEXT_ALIGN_TYPES.includes(format)) {
     newProperties = {
       align: isActive ? undefined : format,
@@ -51,12 +29,12 @@ export const toggleBlock = (editor: any, format: any) => {
   Transforms.setNodes<SlateElement>(editor, newProperties);
 
   if (!isActive && isList) {
-    const block = { type: format, children: [] };
+    const block: CustomElement = { type: format, children: [] };
     Transforms.wrapNodes(editor, block);
   }
 };
 
-export const toggleMark = (editor: any, format: any) => {
+export const toggleMark = (editor: CustomEditor, format: MarkTypes) => {
   const isActive = isMarkActive(editor, format);
 
   if (isActive) {
@@ -66,21 +44,21 @@ export const toggleMark = (editor: any, format: any) => {
   }
 };
 
-export const isBlockActive = (editor: any, format: any, blockType = "type") => {
+export const isBlockActive = (editor: CustomEditor, format: BlockTypes, blockType: "type" | "align" = "type") => {
   const { selection } = editor;
   if (!selection) return false;
 
   const [match] = Array.from(
     Editor.nodes(editor, {
       at: Editor.unhangRange(editor, selection),
-      match: (n) => !Editor.isEditor(n) && SlateElement.isElement(n) && (n as any)[blockType] === format,
+      match: (n) => !Editor.isEditor(n) && SlateElement.isElement(n) && n[blockType] === format,
     })
   );
 
   return !!match;
 };
 
-export const isMarkActive = (editor: any, format: any) => {
+export const isMarkActive = (editor: CustomEditor, format: MarkTypes) => {
   const marks = Editor.marks(editor);
-  return marks ? (marks as any)[format] === true : false;
+  return marks ? marks[format] === true : false;
 };

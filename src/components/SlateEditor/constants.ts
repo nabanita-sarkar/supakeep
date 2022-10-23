@@ -1,4 +1,6 @@
-export const HOTKEYS: { [key: string]: string } = {
+import { MarkTypes } from "./types";
+
+export const HOTKEYS: { [key: string]: MarkTypes } = {
   "mod+b": "bold",
   "mod+i": "italic",
   "mod+u": "underline",

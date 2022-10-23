@@ -1,36 +1,20 @@
-import React, { ReactNode, useCallback, useMemo } from "react";
 import isHotkey from "is-hotkey";
-import { Editable, withReact, useSlate, Slate } from "slate-react";
-import { Editor, Transforms, createEditor, Descendant, Element as SlateElement } from "slate";
+import { useCallback, useMemo } from "react";
+import { createEditor, Descendant } from "slate";
 import { withHistory } from "slate-history";
+import { Editable, RenderElementProps, RenderLeafProps, Slate, useSlate, withReact } from "slate-react";
 
-import { Toolbar, ToolsMenu } from "./components";
 import { ActionIcon, Checkbox, Menu } from "@mantine/core";
-import {
-  TbAlignCenter,
-  TbAlignJustified,
-  TbAlignLeft,
-  TbAlignRight,
-  TbBold,
-  TbCode,
-  TbGripVertical,
-  TbH1,
-  TbH2,
-  TbItalic,
-  TbList,
-  TbListNumbers,
-  TbPlus,
-  TbQuote,
-  TbUnderline,
-} from "react-icons/tb";
-import styles from "./SlateEditor.module.scss";
-import { HOTKEYS, TEXT_ALIGN_TYPES } from "./constants";
-import { isBlockActive, toggleBlock, toggleMark } from "./functions";
+import { TbGripVertical, TbH1, TbH2, TbList, TbListNumbers, TbQuote } from "react-icons/tb";
 import HoveringToolbar from "./components/HoveringToolbar";
+import { HOTKEYS } from "./constants";
+import { toggleBlock, toggleMark } from "./functions";
+import styles from "./SlateEditor.module.scss";
+import { MarkTypes } from "./types";
 
 function RichTextExample() {
-  const renderElement = useCallback((props: any) => <Element {...props} />, []);
-  const renderLeaf = useCallback((props: any) => <Leaf {...props} />, []);
+  const renderElement = useCallback((props: RenderElementProps) => <Element {...props} />, []);
+  const renderLeaf = useCallback((props: RenderLeafProps) => <Leaf {...props} />, []);
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);
 
   return (
@@ -67,7 +51,7 @@ function RichTextExample() {
           autoFocus
           onKeyDown={(event) => {
             for (const hotkey in HOTKEYS) {
-              if (isHotkey(hotkey, event as any)) {
+              if (isHotkey(hotkey, event)) {
                 event.preventDefault();
                 const mark = HOTKEYS[hotkey];
                 toggleMark(editor, mark);
@@ -75,15 +59,8 @@ function RichTextExample() {
             }
           }}
           onDOMBeforeInput={(event) => {
-            // for (const hotkey in HOTKEYS) {
-            //   if (isHotkey(hotkey, event as any)) {
-            //     event.preventDefault();
-            //     const mark = HOTKEYS[hotkey];
-            //     toggleMark(editor, mark);
-            //   }
-            // }
             event.preventDefault();
-            return toggleMark(editor, event.inputType);
+            return toggleMark(editor, event.inputType as MarkTypes);
           }}
         />
       </Slate>
@@ -91,7 +68,7 @@ function RichTextExample() {
   );
 }
 
-function Element({ attributes, children, element }: { attributes: any; children: any; element: any }) {
+function Element({ attributes, children, element }: RenderElementProps) {
   const style = { textAlign: element.align };
   const editor = useSlate();
 
@@ -217,25 +194,9 @@ function Element({ attributes, children, element }: { attributes: any; children:
         </div>
       );
   }
-  // return (
-  //   <div {...attributes} className={styles["block-element"]}>
-  //     {/* <Menu>
-  //       <Menu.Target>
-  //         <ActionIcon className={styles["block-plus"]}>
-  //           <TbPlus />
-  //         </ActionIcon>
-  //       </Menu.Target>
-  //       <Menu.Dropdown>
-  //         <Menu.Item icon={<TbH1 />}>H1</Menu.Item>
-  //       </Menu.Dropdown>
-  //     </Menu> */}
-  //     {blockElement}
-  //   </div>
-  // );
-  // return blockElement;
 }
 
-function Leaf({ attributes, children, leaf }: { attributes: any; children: any; leaf: any }) {
+function Leaf({ attributes, children, leaf }: RenderLeafProps) {
   if (leaf.bold) {
     children = <strong>{children}</strong>;
   }
@@ -255,24 +216,7 @@ function Leaf({ attributes, children, leaf }: { attributes: any; children: any; 
   return <span {...attributes}>{children}</span>;
 }
 
-function BlockButton({ format, icon }: { format: string; icon: ReactNode }) {
-  const editor = useSlate();
-  const isActive = isBlockActive(editor, format, TEXT_ALIGN_TYPES.includes(format) ? "align" : "type");
-  return (
-    <ActionIcon
-      radius="sm"
-      className={isActive ? styles.active : ""}
-      onMouseDown={(event: any) => {
-        event.preventDefault();
-        toggleBlock(editor, format);
-      }}
-    >
-      {icon}
-    </ActionIcon>
-  );
-}
-
-const initialValue: any[] = [
+const initialValue: Descendant[] = [
   {
     type: "paragraph",
     children: [
