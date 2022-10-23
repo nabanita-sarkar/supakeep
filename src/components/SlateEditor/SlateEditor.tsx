@@ -4,8 +4,8 @@ import { Editable, withReact, useSlate, Slate } from "slate-react";
 import { Editor, Transforms, createEditor, Descendant, Element as SlateElement } from "slate";
 import { withHistory } from "slate-history";
 
-import { Button, Toolbar, Menu } from "./components";
-import { ActionIcon } from "@mantine/core";
+import { Toolbar, ToolsMenu } from "./components";
+import { ActionIcon, Checkbox, Menu } from "@mantine/core";
 import {
   TbAlignCenter,
   TbAlignJustified,
@@ -13,25 +13,20 @@ import {
   TbAlignRight,
   TbBold,
   TbCode,
+  TbGripVertical,
   TbH1,
   TbH2,
   TbItalic,
   TbList,
   TbListNumbers,
+  TbPlus,
   TbQuote,
   TbUnderline,
 } from "react-icons/tb";
 import styles from "./SlateEditor.module.scss";
-
-const HOTKEYS: { [key: string]: string } = {
-  "mod+b": "bold",
-  "mod+i": "italic",
-  "mod+u": "underline",
-  "mod+`": "code",
-};
-
-const LIST_TYPES = ["numbered-list", "bulleted-list"];
-const TEXT_ALIGN_TYPES = ["left", "center", "right", "justify"];
+import { HOTKEYS, TEXT_ALIGN_TYPES } from "./constants";
+import { isBlockActive, toggleBlock, toggleMark } from "./functions";
+import HoveringToolbar from "./components/HoveringToolbar";
 
 function RichTextExample() {
   const renderElement = useCallback((props: any) => <Element {...props} />, []);
@@ -41,27 +36,28 @@ function RichTextExample() {
   return (
     <div className={styles.editor}>
       <Slate editor={editor} value={initialValue}>
-        <Toolbar>
-          <Menu>
+        {/* <Toolbar>
+          <ToolsMenu>
             <MarkButton format="bold" icon={<TbBold />} />
             <MarkButton format="italic" icon={<TbItalic />} />
             <MarkButton format="underline" icon={<TbUnderline />} />
             <MarkButton format="code" icon={<TbCode />} />
-          </Menu>
-          <Menu>
+          </ToolsMenu>
+          <ToolsMenu>
             <BlockButton format="heading-one" icon={<TbH1 />} />
             <BlockButton format="heading-two" icon={<TbH2 />} />
             <BlockButton format="block-quote" icon={<TbQuote />} />
             <BlockButton format="numbered-list" icon={<TbListNumbers />} />
             <BlockButton format="bulleted-list" icon={<TbList />} />
-          </Menu>
-          <Menu>
+          </ToolsMenu>
+          <ToolsMenu>
             <BlockButton format="left" icon={<TbAlignLeft />} />
             <BlockButton format="center" icon={<TbAlignCenter />} />
             <BlockButton format="right" icon={<TbAlignRight />} />
             <BlockButton format="justify" icon={<TbAlignJustified />} />
-          </Menu>
-        </Toolbar>
+          </ToolsMenu>
+        </Toolbar> */}
+        <HoveringToolbar />
         <Editable
           renderElement={renderElement}
           renderLeaf={renderLeaf}
@@ -78,97 +74,113 @@ function RichTextExample() {
               }
             }
           }}
+          onDOMBeforeInput={(event) => {
+            // for (const hotkey in HOTKEYS) {
+            //   if (isHotkey(hotkey, event as any)) {
+            //     event.preventDefault();
+            //     const mark = HOTKEYS[hotkey];
+            //     toggleMark(editor, mark);
+            //   }
+            // }
+            event.preventDefault();
+            return toggleMark(editor, event.inputType);
+          }}
         />
       </Slate>
     </div>
   );
 }
 
-const toggleBlock = (editor: any, format: any) => {
-  const isActive = isBlockActive(editor, format, TEXT_ALIGN_TYPES.includes(format) ? "align" : "type");
-  const isList = LIST_TYPES.includes(format);
-
-  Transforms.unwrapNodes(editor, {
-    match: (n) =>
-      !Editor.isEditor(n) &&
-      SlateElement.isElement(n) &&
-      LIST_TYPES.includes((n as any).type) &&
-      !TEXT_ALIGN_TYPES.includes(format),
-    split: true,
-  });
-  let newProperties: { [key: string]: boolean };
-  if (TEXT_ALIGN_TYPES.includes(format)) {
-    newProperties = {
-      align: isActive ? undefined : format,
-    };
-  } else {
-    newProperties = {
-      type: isActive ? "paragraph" : isList ? "list-item" : format,
-    };
-  }
-  Transforms.setNodes<SlateElement>(editor, newProperties);
-
-  if (!isActive && isList) {
-    const block = { type: format, children: [] };
-    Transforms.wrapNodes(editor, block);
-  }
-};
-
-const toggleMark = (editor: any, format: any) => {
-  const isActive = isMarkActive(editor, format);
-
-  if (isActive) {
-    Editor.removeMark(editor, format);
-  } else {
-    Editor.addMark(editor, format, true);
-  }
-};
-
-const isBlockActive = (editor: any, format: any, blockType = "type") => {
-  const { selection } = editor;
-  if (!selection) return false;
-
-  const [match] = Array.from(
-    Editor.nodes(editor, {
-      at: Editor.unhangRange(editor, selection),
-      match: (n) => !Editor.isEditor(n) && SlateElement.isElement(n) && (n as any)[blockType] === format,
-    })
-  );
-
-  return !!match;
-};
-
-const isMarkActive = (editor: any, format: any) => {
-  const marks = Editor.marks(editor);
-  return marks ? (marks as any)[format] === true : false;
-};
-
 function Element({ attributes, children, element }: { attributes: any; children: any; element: any }) {
   const style = { textAlign: element.align };
+  const editor = useSlate();
+
+  const optionsMenu = (
+    <Menu>
+      <Menu.Target>
+        <ActionIcon className={styles["menu-btn"]}>
+          <TbGripVertical size={16} />
+        </ActionIcon>
+      </Menu.Target>
+      <Menu.Dropdown>
+        <Menu.Item
+          icon={<TbH1 />}
+          onClick={() => {
+            toggleBlock(editor, "heading-one");
+          }}
+        >
+          Heading-1
+        </Menu.Item>
+        <Menu.Item
+          icon={<TbH2 />}
+          onClick={() => {
+            toggleBlock(editor, "heading-two");
+          }}
+        >
+          Heading-2
+        </Menu.Item>
+        <Menu.Item
+          icon={<TbQuote />}
+          onClick={() => {
+            toggleBlock(editor, "block-quote");
+          }}
+        >
+          Blockquote
+        </Menu.Item>
+        <Menu.Item
+          icon={<TbList />}
+          onClick={() => {
+            toggleBlock(editor, "bulleted-list");
+          }}
+        >
+          Bulletted List
+        </Menu.Item>
+        <Menu.Item
+          icon={<TbListNumbers />}
+          onClick={() => {
+            toggleBlock(editor, "numbered-list");
+          }}
+        >
+          Numbered List
+        </Menu.Item>
+      </Menu.Dropdown>
+    </Menu>
+  );
+
   switch (element.type) {
     case "block-quote":
       return (
-        <blockquote style={style} {...attributes}>
-          {children}
-        </blockquote>
+        <div {...attributes} className={styles["block-element"]}>
+          {optionsMenu}
+          <blockquote style={style} {...attributes}>
+            {children}
+          </blockquote>
+        </div>
       );
     case "bulleted-list":
       return (
-        <ul style={style} {...attributes}>
-          {children}
-        </ul>
+        <div {...attributes} className={styles["block-element"]}>
+          {optionsMenu}
+          <ul style={style} {...attributes}>
+            {children}
+          </ul>
+        </div>
       );
     case "heading-one":
       return (
-        <h1 style={style} {...attributes}>
-          {children}
-        </h1>
+        <div {...attributes} className={styles["block-element"]}>
+          {optionsMenu}
+          <h1 style={style}>{children}</h1>
+        </div>
       );
     case "heading-two":
       return (
-        <h2 style={style} {...attributes}>
-          {children}
-        </h2>
+        <div {...attributes} className={styles["block-element"]}>
+          {optionsMenu}
+          <h2 style={style} {...attributes}>
+            {children}
+          </h2>
+        </div>
       );
     case "list-item":
       return (
@@ -178,17 +190,49 @@ function Element({ attributes, children, element }: { attributes: any; children:
       );
     case "numbered-list":
       return (
-        <ol style={style} {...attributes}>
-          {children}
-        </ol>
+        <div {...attributes} className={styles["block-element"]}>
+          {optionsMenu}
+          <ol style={style} {...attributes}>
+            {children}
+          </ol>
+        </div>
+      );
+    case "check-list":
+      return (
+        <div {...attributes} className={styles["block-element"]}>
+          {optionsMenu}
+          <Checkbox defaultChecked={element.checked} />
+          <p style={style} {...attributes}>
+            {children}
+          </p>
+        </div>
       );
     default:
       return (
-        <p style={style} {...attributes}>
-          {children}
-        </p>
+        <div {...attributes} className={styles["block-element"]}>
+          {optionsMenu}
+          <p style={style} {...attributes}>
+            {children}
+          </p>
+        </div>
       );
   }
+  // return (
+  //   <div {...attributes} className={styles["block-element"]}>
+  //     {/* <Menu>
+  //       <Menu.Target>
+  //         <ActionIcon className={styles["block-plus"]}>
+  //           <TbPlus />
+  //         </ActionIcon>
+  //       </Menu.Target>
+  //       <Menu.Dropdown>
+  //         <Menu.Item icon={<TbH1 />}>H1</Menu.Item>
+  //       </Menu.Dropdown>
+  //     </Menu> */}
+  //     {blockElement}
+  //   </div>
+  // );
+  // return blockElement;
 }
 
 function Leaf({ attributes, children, leaf }: { attributes: any; children: any; leaf: any }) {
@@ -221,23 +265,6 @@ function BlockButton({ format, icon }: { format: string; icon: ReactNode }) {
       onMouseDown={(event: any) => {
         event.preventDefault();
         toggleBlock(editor, format);
-      }}
-    >
-      {icon}
-    </ActionIcon>
-  );
-}
-
-function MarkButton({ format, icon }: { format: string; icon: ReactNode }) {
-  const editor = useSlate();
-  const isActive = isMarkActive(editor, format);
-  return (
-    <ActionIcon
-      radius="sm"
-      className={isActive ? styles.active : ""}
-      onMouseDown={(event: any) => {
-        event.preventDefault();
-        toggleMark(editor, format);
       }}
     >
       {icon}
@@ -278,6 +305,16 @@ const initialValue: any[] = [
     type: "paragraph",
     align: "center",
     children: [{ text: "Try it out for yourself!" }],
+  },
+  {
+    type: "check-list",
+    checked: true,
+    children: [{ text: "A check list" }],
+  },
+  {
+    type: "check-list",
+    checked: false,
+    children: [{ text: "Todo list" }],
   },
 ];
 

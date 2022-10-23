@@ -30,12 +30,13 @@
 .editor {
   // width: 400px;
   margin-top: $marg-xl;
-  background: var(--bg-top);
+  // background: var(--bg-top);
   padding: $marg-md;
   border-radius: 16px;
 
   .content {
     padding: $marg-md;
+
     blockquote {
       position: relative;
       margin-left: 0px;
@@ -52,5 +53,42 @@
         border-radius: $radi-sm;
       }
     }
+    code {
+      color: var(--text-sub);
+      background: var(--border);
+      padding: $marg-xs;
+      border-radius: 2px;
+    }
   }
+}
+
+.block-element {
+  position: relative;
+  display: flex;
+  // grid-template-columns: 24px auto;
+  gap: $marg-sm;
+  // align-items: center;
+
+  .menu-btn {
+    visibility: hidden;
+  }
+
+  &:hover {
+    .menu-btn {
+      visibility: visible;
+    }
+  }
+}
+
+.hovering-menu {
+  // padding: 8px 7px 6px;
+  position: absolute;
+  z-index: 1;
+  top: -10000px;
+  left: -10000px;
+  margin-top: -6px;
+  opacity: 0;
+  // background-color: #222;
+  // border-radius: 4px;
+  transition: opacity 0.5s;
 }

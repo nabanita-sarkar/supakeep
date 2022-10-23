@@ -1,8 +1,10 @@
 import { MantineProvider, Global, ColorSchemeProvider, ColorScheme } from "@mantine/core";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import BlockEditor from "components/BlockEditor";
 // import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 import Layout from "components/Layout";
+import SlateEditor from "components/SlateEditor";
 // import Login from "pages/login";
 import Main from "pages/main";
 import Note from "pages/note";
@@ -167,6 +169,7 @@ function App() {
             <BrowserRouter>
               <Routes>
                 {/* <Route path="/" element={<Login />} /> */}
+                <Route path="note" element={<SlateEditor />} />
                 <Route path="/" element={<Layout />}>
                   <Route index element={<Main />} />
                   <Route path=":id" element={<Note />} />
