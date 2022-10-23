@@ -17,6 +17,7 @@ type AlignType = "start" | "end" | "left" | "right" | "center" | "justify" | "ma
 
 export type CustomText = { text: string | null; bold?: true; italic?: true; code?: true; underline?: true };
 export type MarkTypes = keyof Omit<CustomText, "text">;
+
 export type CustomElement = {
   type: BlockTypes;
   children: CustomText[];

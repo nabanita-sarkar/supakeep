@@ -1,7 +1,7 @@
 import { Editor, Element as SlateElement, Transforms } from "slate";
 
-import { LIST_TYPES, TEXT_ALIGN_TYPES } from "./constants";
-import { BlockTypes, CustomEditor, CustomElement, MarkTypes } from "./types";
+import { LIST_TYPES, TEXT_ALIGN_TYPES } from "./SlateEditor.constants";
+import { BlockTypes, CustomEditor, CustomElement, MarkTypes } from "./SlateEditor.types";
 
 export const toggleBlock = (editor: CustomEditor, format: BlockTypes) => {
   const isActive = isBlockActive(editor, format, TEXT_ALIGN_TYPES.includes(format) ? "align" : "type");

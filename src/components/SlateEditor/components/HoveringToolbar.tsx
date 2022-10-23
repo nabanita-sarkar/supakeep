@@ -5,9 +5,9 @@ import { useFocused, useSlate } from "slate-react";
 
 import { createPortal } from "react-dom";
 import { Editor, Range } from "slate";
-import { isMarkActive, toggleMark } from "../functions";
+import { isMarkActive, toggleMark } from "../SlateEditor.functions";
 import styles from "../SlateEditor.module.scss";
-import { MarkTypes } from "../types";
+import { MarkTypes } from "../SlateEditor.types";
 
 interface BaseProps {
   className: string;
