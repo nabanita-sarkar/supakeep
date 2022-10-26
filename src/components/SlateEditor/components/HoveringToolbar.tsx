@@ -1,11 +1,11 @@
-import { ActionIcon } from "@mantine/core";
-import { forwardRef, MouseEvent, PropsWithChildren, ReactNode, Ref, useEffect, useRef } from "react";
-import { TbBold, TbCode, TbItalic, TbUnderline } from "react-icons/tb";
+import { ActionIcon, Button, Modal, TextInput } from "@mantine/core";
+import { forwardRef, MouseEvent, PropsWithChildren, ReactNode, Ref, useEffect, useRef, useState } from "react";
+import { TbBold, TbCode, TbItalic, TbLink, TbUnderline } from "react-icons/tb";
 import { useFocused, useSlate } from "slate-react";
 
 import { createPortal } from "react-dom";
 import { Editor, Range } from "slate";
-import { isMarkActive, toggleMark } from "../SlateEditor.functions";
+import { isMarkActive, toggleMark, toggleUrl } from "../SlateEditor.functions";
 import styles from "../SlateEditor.module.scss";
 import { MarkTypes } from "../SlateEditor.types";
 
@@ -47,6 +47,28 @@ function HoveringToolbar() {
   const editor = useSlate();
   const inFocus = useFocused();
 
+  const [opened, setOpened] = useState(false);
+  const [url, setUrl] = useState("");
+
+  function UrlButton({ icon }: { icon: ReactNode }) {
+    const format = "url";
+    const editor = useSlate();
+    const isActive = isMarkActive(editor, format);
+    return (
+      <>
+        <ActionIcon
+          radius="sm"
+          className={isActive ? styles.active : ""}
+          onClick={(event: MouseEvent) => {
+            event?.preventDefault();
+            setOpened(true);
+          }}
+        >
+          {icon}
+        </ActionIcon>
+      </>
+    );
+  }
   useEffect(() => {
     const el = ref.current;
     const { selection } = editor;
@@ -71,21 +93,40 @@ function HoveringToolbar() {
   });
 
   return (
-    <Portal>
-      <ToolsMenu
-        ref={ref}
-        className={styles["hovering-menu"]}
-        onMouseDown={(e: MouseEvent) => {
-          // prevent toolbar from taking focus away from editor
-          e.preventDefault();
+    <>
+      <Portal>
+        <ToolsMenu
+          ref={ref}
+          className={styles["hovering-menu"]}
+          onMouseDown={(e: MouseEvent) => {
+            // prevent toolbar from taking focus away from editor
+            e.preventDefault();
+          }}
+        >
+          <MarkButton format="bold" icon={<TbBold />} />
+          <MarkButton format="italic" icon={<TbItalic />} />
+          <MarkButton format="underline" icon={<TbUnderline />} />
+          <MarkButton format="code" icon={<TbCode />} />
+          <UrlButton icon={<TbLink />} />
+        </ToolsMenu>
+      </Portal>
+      <Modal
+        title="Link"
+        opened={opened}
+        onClose={() => {
+          setOpened(false);
         }}
       >
-        <MarkButton format="bold" icon={<TbBold />} />
-        <MarkButton format="italic" icon={<TbItalic />} />
-        <MarkButton format="underline" icon={<TbUnderline />} />
-        <MarkButton format="code" icon={<TbCode />} />
-      </ToolsMenu>
-    </Portal>
+        <TextInput value={url} onChange={(e) => setUrl(e.target.value)} />
+        <Button
+          onClick={() => {
+            toggleUrl(editor, url);
+          }}
+        >
+          Save
+        </Button>
+      </Modal>
+    </>
   );
 }
 

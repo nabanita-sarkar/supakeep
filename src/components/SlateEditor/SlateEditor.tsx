@@ -1,6 +1,6 @@
 import isHotkey from "is-hotkey";
 import { useCallback, useMemo } from "react";
-import { createEditor } from "slate";
+import { createEditor, Range, Transforms } from "slate";
 import { withHistory } from "slate-history";
 import { Editable, RenderElementProps, RenderLeafProps, Slate, withReact } from "slate-react";
 
@@ -20,7 +20,13 @@ function RichTextExample() {
 
   return (
     <div className={styles.editor}>
-      <Slate editor={editor} value={initialValue}>
+      <Slate
+        editor={editor}
+        value={initialValue}
+        onChange={(val) => {
+          console.log(val);
+        }}
+      >
         <HoveringToolbar />
         <Editable
           renderElement={renderElement}
@@ -35,6 +41,28 @@ function RichTextExample() {
                 event.preventDefault();
                 const mark = HOTKEYS[hotkey];
                 toggleMark(editor, mark);
+              }
+            }
+
+            const { selection } = editor;
+
+            // Default left/right behavior is unit:'character'.
+            // This fails to distinguish between two cursor positions, such as
+            // <inline>foo<cursor/></inline> vs <inline>foo</inline><cursor/>.
+            // Here we modify the behavior to unit:'offset'.
+            // This lets the user step into and out of the inline without stepping over characters.
+            // You may wish to customize this further to only use unit:'offset' in specific cases.
+            if (selection && Range.isCollapsed(selection)) {
+              const { nativeEvent } = event;
+              if (isHotkey("left", nativeEvent)) {
+                event.preventDefault();
+                Transforms.move(editor, { unit: "offset", reverse: true });
+                return;
+              }
+              if (isHotkey("right", nativeEvent)) {
+                event.preventDefault();
+                Transforms.move(editor, { unit: "offset" });
+                return;
               }
             }
           }}
@@ -70,6 +98,12 @@ const initialValue: CustomElement[] = [
       { text: "bold", bold: true },
       {
         text: ", or add a semantically rendered block quote in the middle of the page, like this:",
+      },
+      {
+        // type: "url",
+        url: "hey.com",
+        // children: [{ text: "link" }],
+        text: "link",
       },
     ],
   },

@@ -1,4 +1,4 @@
-import { BaseEditor } from "slate";
+import { BaseEditor, Descendant } from "slate";
 import { ReactEditor } from "slate-react";
 import { HistoryEditor } from "slate-history";
 
@@ -15,12 +15,19 @@ export type BlockTypes =
 
 type AlignType = "start" | "end" | "left" | "right" | "center" | "justify" | "match-parent";
 
-export type CustomText = { text: string | null; bold?: true; italic?: true; code?: true; underline?: true };
+export type CustomText = {
+  text: string | null;
+  bold?: true;
+  italic?: true;
+  code?: true;
+  underline?: true;
+  url?: string;
+};
 export type MarkTypes = keyof Omit<CustomText, "text">;
 
 export type CustomElement = {
   type: BlockTypes;
-  children: CustomText[];
+  children: Descendant[];
   url?: string;
   align?: AlignType;
   checked?: boolean;

@@ -17,6 +17,10 @@ function Leaf({ attributes, children, leaf }: RenderLeafProps) {
     children = <u>{children}</u>;
   }
 
+  if (leaf.url) {
+    children = <a href={leaf.url}>{children}</a>;
+  }
+
   return <span {...attributes}>{children}</span>;
 }
 

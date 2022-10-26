@@ -11,10 +11,10 @@ function Element({ attributes, children, element }: RenderElementProps) {
   const editor = useSlate();
 
   const optionsMenu = (
-    <Menu>
+    <Menu classNames={{ item: styles["menu-item"], itemIcon: styles["menu-item-icon"] }}>
       <Menu.Target>
         <ActionIcon className={styles["menu-btn"]}>
-          <TbGripVertical size={16} />
+          <TbGripVertical />
         </ActionIcon>
       </Menu.Target>
       <Menu.Dropdown>

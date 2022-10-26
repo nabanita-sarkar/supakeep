@@ -65,12 +65,18 @@
 .block-element {
   position: relative;
   display: flex;
-  // grid-template-columns: 24px auto;
   gap: $marg-sm;
-  // align-items: center;
+  align-items: baseline;
 
   .menu-btn {
-    visibility: hidden;
+    height: 22px;
+    min-height: 22px;
+    // visibility: hidden;
+
+    svg {
+      height: 16px !important;
+      width: 16px !important;
+    }
   }
 
   &:hover {
@@ -81,14 +87,28 @@
 }
 
 .hovering-menu {
-  // padding: 8px 7px 6px;
   position: absolute;
   z-index: 1;
   top: -10000px;
   left: -10000px;
   margin-top: -6px;
   opacity: 0;
-  // background-color: #222;
-  // border-radius: 4px;
   transition: opacity 0.5s;
+}
+
+.menu-item {
+  padding: $marg-xs;
+  color: var(--text-main);
+}
+
+.menu-item-icon {
+  color: var(--text-sub);
+  border: $border-sm;
+  border-radius: $radi-sm;
+  padding: $marg-xs;
+
+  svg {
+    height: 16px !important;
+    width: 16px !important;
+  }
 }

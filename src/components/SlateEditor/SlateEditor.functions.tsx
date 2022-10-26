@@ -44,6 +44,16 @@ export const toggleMark = (editor: CustomEditor, format: MarkTypes) => {
   }
 };
 
+export const toggleUrl = (editor: CustomEditor, url: string) => {
+  const isActive = isMarkActive(editor, "url");
+
+  if (isActive) {
+    Editor.removeMark(editor, "url");
+  } else {
+    Editor.addMark(editor, "url", url);
+  }
+};
+
 export const isBlockActive = (editor: CustomEditor, format: BlockTypes, blockType: "type" | "align" = "type") => {
   const { selection } = editor;
   if (!selection) return false;
@@ -62,3 +72,47 @@ export const isMarkActive = (editor: CustomEditor, format: MarkTypes) => {
   const marks = Editor.marks(editor);
   return marks ? marks[format] === true : false;
 };
+
+// export const insertLink = (editor: CustomEditor, url: string) => {
+//   if (editor.selection) {
+//     wrapLink(editor, url);
+//   }
+// };
+
+// const isLinkActive = (editor: CustomEditor) => {
+//   const [link] = Editor.nodes(editor, {
+//     match: (n) => !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === "link",
+//   });
+//   return !!link;
+// };
+
+// const unwrapLink = (editor: CustomEditor) => {
+//   Transforms.unwrapNodes(editor, {
+//     match: (n) => !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === "link",
+//   });
+// };
+
+// const wrapLink = (editor: CustomEditor, url: string) => {
+//   if (isLinkActive(editor)) {
+//     unwrapLink(editor);
+//   }
+
+//   const { selection } = editor;
+//   const isCollapsed = selection && Range.isCollapsed(selection);
+//   const link: CustomElement = {
+//     type: "link",
+//     url,
+//     children: isCollapsed ? [{ text: url }] : [],
+//   };
+
+//   if (isCollapsed) {
+//     console.log("here");
+
+//     Transforms.insertNodes(editor, link);
+//   } else {
+//     console.log("or here");
+
+//     Transforms.wrapNodes(editor, link, { split: true });
+//     Transforms.collapse(editor, { edge: "end" });
+//   }
+// };
