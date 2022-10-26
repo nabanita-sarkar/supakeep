@@ -1,4 +1,4 @@
-import { ActionIcon, Button, Modal, TextInput } from "@mantine/core";
+import { ActionIcon, Button, Modal, TextInput, Tooltip } from "@mantine/core";
 import { forwardRef, MouseEvent, PropsWithChildren, ReactNode, Ref, useEffect, useRef, useState } from "react";
 import { TbBold, TbCode, TbItalic, TbLink, TbUnderline } from "react-icons/tb";
 import { useFocused, useSlate } from "slate-react";
@@ -8,6 +8,7 @@ import { Editor, Range } from "slate";
 import { isMarkActive, toggleMark, toggleUrl } from "../SlateEditor.functions";
 import styles from "../SlateEditor.module.scss";
 import { MarkTypes } from "../SlateEditor.types";
+import { TOOLTIP } from "../SlateEditor.constants";
 
 interface BaseProps {
   className: string;
@@ -25,20 +26,30 @@ function Portal({ children }: { children: ReactNode }) {
   return typeof document === "object" ? createPortal(children, document.body) : null;
 }
 
-function MarkButton({ format, icon }: { format: MarkTypes; icon: ReactNode }) {
+function MarkButton({ format, icon }: { format: Exclude<MarkTypes, "url">; icon: ReactNode }) {
   const editor = useSlate();
   const isActive = isMarkActive(editor, format);
   return (
-    <ActionIcon
-      radius="sm"
-      className={isActive ? styles.active : ""}
-      onClick={(event: MouseEvent) => {
-        event?.preventDefault();
-        toggleMark(editor, format);
-      }}
+    <Tooltip
+      label={
+        <>
+          <span>{format}</span>
+          <br />
+          <span className={styles.shortcut}>{TOOLTIP[format]}</span>
+        </>
+      }
     >
-      {icon}
-    </ActionIcon>
+      <ActionIcon
+        radius="sm"
+        className={isActive ? styles.active : ""}
+        onClick={(event: MouseEvent) => {
+          event?.preventDefault();
+          toggleMark(editor, format);
+        }}
+      >
+        {icon}
+      </ActionIcon>
+    </Tooltip>
   );
 }
 

@@ -114,6 +114,15 @@ function App() {
                 },
               }),
             },
+            Tooltip: {
+              styles: () => ({
+                tooltip: {
+                  background: "black",
+                  fontSize: 12,
+                  fontWeight: 500,
+                },
+              }),
+            },
           },
         }}
       >
