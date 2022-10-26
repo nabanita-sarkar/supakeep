@@ -1,6 +1,6 @@
 import isHotkey from "is-hotkey";
 import { useCallback, useMemo } from "react";
-import { createEditor, Descendant } from "slate";
+import { createEditor, Descendant, Range, Transforms } from "slate";
 import { withHistory } from "slate-history";
 import { Editable, RenderElementProps, RenderLeafProps, Slate, withReact } from "slate-react";
 
@@ -11,7 +11,6 @@ import Leaf from "./components/Leaf";
 import { HOTKEYS } from "./SlateEditor.constants";
 import { toggleMark } from "./SlateEditor.functions";
 import styles from "./SlateEditor.module.scss";
-import { CustomElement } from "./SlateEditor.types";
 
 function RichTextExample({ value, onChange }: { value: Descendant[]; onChange: (value: Descendant[]) => void }) {
   const renderElement = useCallback((props: RenderElementProps) => <Element {...props} />, []);
@@ -44,27 +43,27 @@ function RichTextExample({ value, onChange }: { value: Descendant[]; onChange: (
               }
             }
 
-            // const { selection } = editor;
+            const { selection } = editor;
 
-            // // Default left/right behavior is unit:'character'.
-            // // This fails to distinguish between two cursor positions, such as
-            // // <inline>foo<cursor/></inline> vs <inline>foo</inline><cursor/>.
-            // // Here we modify the behavior to unit:'offset'.
-            // // This lets the user step into and out of the inline without stepping over characters.
-            // // You may wish to customize this further to only use unit:'offset' in specific cases.
-            // if (selection && Range.isCollapsed(selection)) {
-            //   const { nativeEvent } = event;
-            //   if (isHotkey("left", nativeEvent)) {
-            //     event.preventDefault();
-            //     Transforms.move(editor, { unit: "offset", reverse: true });
-            //     return;
-            //   }
-            //   if (isHotkey("right", nativeEvent)) {
-            //     event.preventDefault();
-            //     Transforms.move(editor, { unit: "offset" });
-            //     return;
-            //   }
-            // }
+            // Default left/right behavior is unit:'character'.
+            // This fails to distinguish between two cursor positions, such as
+            // <inline>foo<cursor/></inline> vs <inline>foo</inline><cursor/>.
+            // Here we modify the behavior to unit:'offset'.
+            // This lets the user step into and out of the inline without stepping over characters.
+            // You may wish to customize this further to only use unit:'offset' in specific cases.
+            if (selection && Range.isCollapsed(selection)) {
+              const { nativeEvent } = event;
+              if (isHotkey("left", nativeEvent)) {
+                event.preventDefault();
+                Transforms.move(editor, { unit: "offset", reverse: true });
+                return;
+              }
+              if (isHotkey("right", nativeEvent)) {
+                event.preventDefault();
+                Transforms.move(editor, { unit: "offset" });
+                return;
+              }
+            }
           }}
           // onDOMBeforeInput={(event) => {
           //   event.preventDefault();

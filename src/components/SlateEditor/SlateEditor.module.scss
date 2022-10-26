@@ -53,11 +53,17 @@
         border-radius: $radi-sm;
       }
     }
+    u {
+      text-decoration: none;
+      border-bottom: $border;
+      border-color: inherit;
+    }
     code {
       color: var(--text-sub);
       background: var(--border);
-      padding: $marg-xs;
-      border-radius: 2px;
+      padding: calc($marg-xs / 2) $marg-xs;
+      border-radius: $radi-sm;
+      border: inherit;
     }
   }
 }
