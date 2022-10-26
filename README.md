@@ -4,7 +4,9 @@ _Google Keep supercharged ⚡_
 
 Supakeep is a browser local (cloud support coming soon) note taking application. The note taking experience tries to emulate [Notion.so](https://notion.so)'s block based editing style.
 
-## Currently Supported features
+## Features
+
+### Currently Supported
 
 - Heading 1
 - Heading 2
@@ -16,3 +18,13 @@ Supakeep is a browser local (cloud support coming soon) note taking application.
 - Italic
 - Underline
 - Link
+- Inline Code
+
+### Upcoming
+
+- Heading 3
+- Strike-through
+- Formula/Equation
+- Callout
+- Code Highlighting
+- Toggle list
