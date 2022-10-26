@@ -1,6 +1,19 @@
 @import "styles/variables.scss";
 
+$note-width: 40%;
+$card-shadow: 0 1px 3px rgb(0 0 0 / 5%), rgb(0 0 0 / 5%) 0px 10px 15px -5px, rgb(0 0 0 / 4%) 0px 7px 7px -5px;
+
 .container {
+  width: 100%;
+  &-shrink {
+    display: grid;
+    grid-template-columns: auto $note-width;
+    gap: $marg-sm;
+  }
+}
+
+.wrapper {
+  height: fit-content;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: $marg-lg;
@@ -16,13 +29,30 @@
   }
 
   .card {
+    border: none;
     background: var(--bg-light);
-  }
-
-  .title {
+    cursor: pointer;
+    padding: 0px;
+    margin: 0px;
+    border-radius: $radi-md;
+    box-shadow: $card-shadow;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    flex-direction: column;
+    overflow: hidden;
+
+    .pattern-wrapper {
+      overflow: hidden;
+      width: 100%;
+    }
+    .title {
+      padding: $marg-xl;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      h5 {
+        margin: 0px;
+      }
+    }
   }
 
   .badges-section {
@@ -54,4 +84,32 @@
   span {
     color: var(--text-sub);
   }
+
+  &:hover {
+    background: var(--bg-light);
+  }
+}
+
+.note {
+  height: calc(100vh - 46px);
+  margin-block: -#{$marg-lg};
+  padding: $marg-xl;
+  border-left: $border;
+  // width: $note-width;
+  // transition: width 500ms ease-in-out;
+
+  &-hidden {
+    width: 0px;
+    opacity: 0;
+    // transition: width 250ms ease-in-out;
+  }
+  .title-area {
+    display: flex;
+  }
+}
+
+.title {
+  border: none;
+  font-size: $text-h1;
+  font-weight: 700;
 }

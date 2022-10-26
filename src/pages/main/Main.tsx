@@ -1,78 +1,62 @@
-import { Badge, Button, Card, Modal, Textarea, TextInput } from "@mantine/core";
-import Pattern from "components/Pattern";
-import React, { useState } from "react";
-import { TbPlus } from "react-icons/tb";
-import { Link } from "react-router-dom";
-import styles from "./Main.module.scss";
-import { Note } from "utils/types";
-import { useAllNotes, useUpdateNote } from "utils/services";
-import { idGen } from "utils/functions";
+import { Button, CloseButton, TextInput } from "@mantine/core";
 import { useQueryClient } from "@tanstack/react-query";
+import Pattern from "components/Pattern";
+import SlateEditor from "components/SlateEditor";
+import { CustomElement } from "components/SlateEditor/SlateEditor.types";
+import { useState } from "react";
+import { TbPlus } from "react-icons/tb";
+import { Descendant } from "slate";
+import { idGen } from "utils/functions";
+import { useAllNotes, useUpdateNote } from "utils/services";
+import { Note } from "utils/types";
+import styles from "./Main.module.scss";
 
-function AddNewCard() {
-  const [newNote, setNewNote] = useState<Note>({ title: "", content: "", tags: [], _id: idGen() });
+function Main() {
+  const initialContent: CustomElement[] = [{ type: "paragraph", children: [{ text: "" }] }];
+  const notes = useAllNotes();
   const [isOpen, setIsOpen] = useState(false);
+
+  const [newNote, setNewNote] = useState<Note | null>(null);
 
   const updateNote = useUpdateNote();
   const queryClient = useQueryClient();
 
-  return (
-    <>
-      <Button onClick={() => setIsOpen(true)} className={styles["add-new"]}>
-        <TbPlus />
-        <span>Add new note</span>
-      </Button>
-      <Modal
-        title={
-          <TextInput
-            placeholder="Title"
-            value={newNote.title}
-            onChange={(e) => {
-              const note = { ...newNote, title: e.target.value };
-              setNewNote(note);
-              updateNote.mutate(note);
-              queryClient.invalidateQueries(["all-notes"]);
-            }}
-          />
-        }
-        opened={isOpen}
-        onClose={() => {
-          setIsOpen(false);
-          setNewNote({ title: "", content: "", tags: [], _id: idGen() });
-        }}
-      >
-        <Textarea
-          placeholder="Write a note"
-          value={newNote.content}
-          onChange={(e) => {
-            const note = { ...newNote, content: e.target.value };
-            setNewNote(note);
-            updateNote.mutate(note);
-          }}
-        />
-      </Modal>
-    </>
-  );
-}
-
-function Main() {
-  const notes = useAllNotes();
+  const updateNoteContent = (value: string | Descendant[], type: "title" | "content") => {
+    if (newNote) {
+      const note: Note = { ...newNote, [type]: value };
+      setNewNote(() => note);
+      updateNote.mutate(note);
+    }
+  };
+  const onClose = () => {
+    setIsOpen(false);
+    setNewNote({ title: "", content: initialContent, tags: [], _id: idGen() });
+    queryClient.invalidateQueries(["all-notes"]);
+  };
 
   return (
-    <div>
-      <div className={styles.container}>
+    <div className={isOpen ? styles["container-shrink"] : styles.container}>
+      <div className={styles.wrapper}>
         {notes.data?.map((note) => (
-          <Card component={Link} to={`/${note._id}`} className={styles.card} shadow="sm" key={note._id}>
-            <Card.Section>
+          <button
+            onClick={() => {
+              setIsOpen(true);
+              setNewNote(note);
+            }}
+            className={styles.card}
+            type="button"
+            key={note._id}
+          >
+            <div className={styles["pattern-wrapper"]}>
               <Pattern id={note._id} />
-            </Card.Section>
+            </div>
             {note.title ? (
               <div className={styles.title}>
                 <h5>{note.title}</h5>
               </div>
             ) : null}
-            <p>{note.content}</p>
-            <section className={styles["badges-section"]}>
+            {/* <p>{note.content}</p> */}
+            {/* <section className={styles["badges-section"]}>
               {note.tags.map((tag) => (
                 <Badge
                   key={tag._id}
@@ -83,10 +67,38 @@ function Main() {
                   {tag.name}
                 </Badge>
               ))}
-            </section>
-          </Card>
+            </section> */}
+          </button>
         ))}
-        <AddNewCard />
+        <Button
+          onClick={() => {
+            setNewNote({ title: "", content: initialContent, tags: [], _id: idGen() });
+            setIsOpen(true);
+          }}
+          className={styles["add-new"]}
+        >
+          <TbPlus />
+          <span>Add new note</span>
+        </Button>
+      </div>
+
+      <div className={isOpen ? styles.note : styles["note-hidden"]}>
+        {newNote ? (
+          <>
+            <div className={styles["title-area"]}>
+              <TextInput
+                placeholder="Title"
+                aria-label="Title"
+                classNames={{ input: styles.title }}
+                variant="unstyled"
+                value={newNote.title}
+                onChange={(e) => updateNoteContent(e.target.value, "title")}
+              />
+              <CloseButton onClick={onClose} />
+            </div>
+            <SlateEditor value={newNote.content} onChange={(val) => updateNoteContent(val, "content")} />
+          </>
+        ) : null}
       </div>
     </div>
   );
