@@ -9,6 +9,13 @@ export const HOTKEYS: { [key: string]: MarkTypes } = {
   "mod+`": "code",
 };
 
+export const TOOLTIP: { [key in Exclude<MarkTypes, "url">]: string } = {
+  bold: "Ctrl/⌘+B",
+  italic: "Ctrl/⌘+I",
+  underline: "Ctrl/⌘+U",
+  code: "Ctrl/⌘+`",
+};
+
 export const LIST_TYPES = ["numbered-list", "bulleted-list", "ch"];
 export const TEXT_ALIGN_TYPES = ["left", "center", "right", "justify"];
 

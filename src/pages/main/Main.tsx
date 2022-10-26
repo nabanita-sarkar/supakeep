@@ -96,7 +96,11 @@ function Main() {
               />
               <CloseButton onClick={onClose} />
             </div>
-            <SlateEditor value={newNote.content} onChange={(val) => updateNoteContent(val, "content")} />
+            <SlateEditor
+              key={newNote._id}
+              value={newNote.content}
+              onChange={(val) => updateNoteContent(val, "content")}
+            />
           </>
         ) : null}
       </div>
