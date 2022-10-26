@@ -1,4 +1,5 @@
 import { MantineColor } from "@mantine/core";
+import { Descendant } from "slate";
 
 export interface Tag {
   _id: string;
@@ -9,6 +10,6 @@ export interface Tag {
 export interface Note {
   _id: string;
   title: string;
-  content: string;
+  content: Descendant[];
   tags: Tag[];
 }

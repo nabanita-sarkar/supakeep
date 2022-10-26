@@ -3,7 +3,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 // import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 import Layout from "components/Layout";
-import SlateEditor from "components/SlateEditor";
 // import Login from "pages/login";
 import Main from "pages/main";
 import Note from "pages/note";
@@ -129,6 +128,7 @@ function App() {
             "p, h1, h2, h3, h4, h5": {
               margin: 0,
               color: theme.colorScheme === "dark" ? theme.colors.gray[2] : theme.colors.gray[8],
+              fontFamily: "Inter",
             },
             p: {
               fontSize: 14,
@@ -168,10 +168,9 @@ function App() {
             <BrowserRouter>
               <Routes>
                 {/* <Route path="/" element={<Login />} /> */}
-                <Route path="note" element={<SlateEditor />} />
+                <Route path="note" element={<Note />} />
                 <Route path="/" element={<Layout />}>
                   <Route index element={<Main />} />
-                  <Route path=":id" element={<Note />} />
                 </Route>
               </Routes>
             </BrowserRouter>
