@@ -2,6 +2,7 @@ import { Button, CloseButton, Loader, TextInput } from "@mantine/core";
 import { useQueryClient } from "@tanstack/react-query";
 import Pattern from "components/Pattern";
 import { CustomElement } from "components/SlateEditor/SlateEditor.types";
+import { deserializeToHTML, serializeToString } from "components/SlateEditor/SlateEditor.utils";
 import { lazy, Suspense, useState } from "react";
 import { TbPlus } from "react-icons/tb";
 import { Descendant } from "slate";
@@ -55,7 +56,7 @@ function Main() {
                 <h5>{note.title}</h5>
               </div>
             ) : null}
-            {/* <p>{note.content}</p> */}
+            <div className={styles.content} dangerouslySetInnerHTML={{ __html: serializeToString(note.content) }} />
             {/* <section className={styles["badges-section"]}>
               {note.tags.map((tag) => (
                 <Badge

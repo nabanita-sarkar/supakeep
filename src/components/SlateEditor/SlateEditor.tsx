@@ -30,7 +30,7 @@ function RichTextExample({ value, onChange }: { value: Descendant[]; onChange: (
         <Editable
           renderElement={renderElement}
           renderLeaf={renderLeaf}
-          placeholder="Enter some rich text…"
+          placeholder="Write here…"
           className={styles.content}
           spellCheck
           autoFocus

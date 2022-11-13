@@ -27,7 +27,7 @@ export type MarkTypes = keyof Omit<CustomText, "text">;
 
 export type CustomElement = {
   type: BlockTypes;
-  children: CustomText[];
+  children: Descendant[];
   url?: string;
   align?: AlignType;
   checked?: boolean;
