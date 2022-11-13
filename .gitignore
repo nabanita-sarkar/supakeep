@@ -25,3 +25,6 @@ dist-ssr
 
 # linter
 .eslintcache
+
+# stats visualizer
+stats.html

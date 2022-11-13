@@ -4,22 +4,42 @@
   display: flex;
   height: 100vh;
 
-  main {
+  .main {
     width: calc(100vw - 250px);
+    margin-left: 250px;
     background-color: var(--bg-dark);
     transition: width 250ms ease-in-out;
+
+    @media screen and (max-width: $md) {
+      width: 100vw;
+      margin-left: 0px;
+    }
   }
   .main-full {
-    @extend main;
+    @extend .main;
     width: 100vw;
+    margin-left: 0px;
+    transition: width 250ms ease-in-out, margin-left 250ms ease-in-out;
   }
-  header {
-    // height: 72px;
+  .header {
+    width: calc(100vw - 250px);
+    height: $header-height;
     padding: $marg-sm $marg-lg;
     border-bottom: $border;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    position: fixed;
+    top: 0px;
+    left: 250px;
+    transition: width 250ms ease-in-out, left 250ms ease-in-out;
+    z-index: 2;
+    background-color: var(--bg-dark);
+
+    @media screen and (max-width: $md) {
+      width: 100vw;
+    }
+
     .left {
       display: flex;
       align-items: center;
@@ -33,12 +53,23 @@
     }
   }
 
+  .header-full {
+    @extend .header;
+    width: 100vw;
+    left: 0px;
+  }
+
   .content {
-    padding: $marg-lg;
+    padding-top: $header-height;
+    // height: calc(100vh - $header-height);
   }
 }
 
 .sidebar {
+  height: 100vh;
+  position: fixed;
+  left: 0px;
+  top: 0px;
   background: var(--bg-light);
   width: 250px;
   border-right: $border;

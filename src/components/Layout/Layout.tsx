@@ -58,8 +58,8 @@ function Layout() {
           <SiderContent />
         </Drawer>
       )}
-      <main className={!isSidebarOpen || width < BREAKPOINTS.md ? styles["main-full"] : ""}>
-        <header>
+      <main className={!isSidebarOpen || width < BREAKPOINTS.md ? styles["main-full"] : styles["main"]}>
+        <header className={!isSidebarOpen || width < BREAKPOINTS.md ? styles["header-full"] : styles["header"]}>
           <div className={styles.left}>
             <ActionIcon aria-label="Toggle Sidebar" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
               <TbMenu2 />

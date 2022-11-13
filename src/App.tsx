@@ -141,6 +141,7 @@ function App() {
             },
             p: {
               fontSize: 14,
+              lineHeight: 1.5,
             },
             h1: {
               fontSize: 28,

@@ -1,39 +1,32 @@
 import { openDB } from "idb";
 import { idGen } from "./functions";
-import { Note } from "./types";
+import { Note, NoteWithoutID, SupakeepSchema } from "./types";
 
 const DB_NAME = "supakeep";
 const NOTE_STORE = "notes";
+const TAG_STORE = "tags";
 
 export function createDB() {
   if (!("indexedDB" in window)) {
     console.log("This browser doesn't support IndexedDB.");
-    return;
   }
-  //   console.log(database.objectStoreNames);
-  openDB(DB_NAME, 1, {
-    upgrade(database) {
-      if (!database.objectStoreNames.contains(NOTE_STORE)) {
-        database.createObjectStore(NOTE_STORE, { keyPath: "_id" });
-      }
-    },
-  })
-    .then(() => {
-      console.log("db created");
-    })
-    .catch(() => {
-      console.log("db was not created");
-    });
 }
 
-const dbConn = openDB(DB_NAME, 1);
+const dbConn = openDB<SupakeepSchema>(DB_NAME, 1, {
+  upgrade(database) {
+    createDB();
+    if (!database.objectStoreNames.contains(NOTE_STORE)) {
+      database.createObjectStore(NOTE_STORE, { keyPath: "_id" });
+      database.createObjectStore(TAG_STORE, { keyPath: "_id" });
+    }
+  },
+});
 
-export async function addNote(note: Omit<Note, "_id">) {
+export async function addNote(note: NoteWithoutID) {
   return (await dbConn).add(NOTE_STORE, { ...note, _id: idGen() }).then((val) => val);
 }
 
 export async function getAllNotes() {
-  createDB();
   return (await dbConn).getAll(NOTE_STORE);
 }
 

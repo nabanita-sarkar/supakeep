@@ -7,7 +7,7 @@ export const useAllNotes = () => {
 };
 
 export const useNote = (id: string) => {
-  return useQuery<Note>(["note", id], () => getNote(id));
+  return useQuery<Note | undefined>(["note", id], async () => await getNote(id));
 };
 
 export const useAddNote = () => {

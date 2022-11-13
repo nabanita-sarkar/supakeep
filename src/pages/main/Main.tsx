@@ -1,15 +1,17 @@
-import { Button, CloseButton, TextInput } from "@mantine/core";
+import { Button, CloseButton, Loader, TextInput } from "@mantine/core";
 import { useQueryClient } from "@tanstack/react-query";
 import Pattern from "components/Pattern";
-import SlateEditor from "components/SlateEditor";
 import { CustomElement } from "components/SlateEditor/SlateEditor.types";
-import { useState } from "react";
+import { deserializeToHTML, serializeToString } from "components/SlateEditor/SlateEditor.utils";
+import { lazy, Suspense, useState } from "react";
 import { TbPlus } from "react-icons/tb";
 import { Descendant } from "slate";
 import { idGen } from "utils/functions";
 import { useAllNotes, useUpdateNote } from "utils/services";
 import { Note } from "utils/types";
 import styles from "./Main.module.scss";
+
+const SlateEditor = lazy(() => import("components/SlateEditor"));
 
 function Main() {
   const initialContent: CustomElement[] = [{ type: "paragraph", children: [{ text: "" }] }];
@@ -22,7 +24,7 @@ function Main() {
   const queryClient = useQueryClient();
 
   const updateNoteContent = (value: string | Descendant[], type: "title" | "content") => {
-    if (newNote) {
+    if (newNote && value.length !== 0 && value !== initialContent) {
       const note: Note = { ...newNote, [type]: value };
       setNewNote(() => note);
       updateNote.mutate(note);
@@ -30,7 +32,6 @@ function Main() {
   };
   const onClose = () => {
     setIsOpen(false);
-    setNewNote({ title: "", content: initialContent, tags: [], _id: idGen() });
     queryClient.invalidateQueries(["all-notes"]);
   };
 
@@ -55,7 +56,7 @@ function Main() {
                 <h5>{note.title}</h5>
               </div>
             ) : null}
-            {/* <p>{note.content}</p> */}
+            <div className={styles.content} dangerouslySetInnerHTML={{ __html: serializeToString(note.content) }} />
             {/* <section className={styles["badges-section"]}>
               {note.tags.map((tag) => (
                 <Badge
@@ -96,11 +97,13 @@ function Main() {
               />
               <CloseButton onClick={onClose} />
             </div>
-            <SlateEditor
-              key={newNote._id}
-              value={newNote.content}
-              onChange={(val) => updateNoteContent(val, "content")}
-            />
+            <Suspense fallback={<Loader />}>
+              <SlateEditor
+                key={newNote._id}
+                value={newNote.content}
+                onChange={(val) => updateNoteContent(val, "content")}
+              />
+            </Suspense>
           </>
         ) : null}
       </div>

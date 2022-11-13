@@ -17,6 +17,8 @@ $card-shadow: 0 1px 3px rgb(0 0 0 / 5%), rgb(0 0 0 / 5%) 0px 10px 15px -5px, rgb
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: $marg-lg;
+  padding: $marg-xl;
+  overflow: auto;
 
   h5 {
     margin-top: $marg-md;
@@ -24,7 +26,7 @@ $card-shadow: 0 1px 3px rgb(0 0 0 / 5%), rgb(0 0 0 / 5%) 0px 10px 15px -5px, rgb
   }
 
   p {
-    margin-block: $marg-md;
+    margin-block: $marg-sm;
     color: var(--text-sub);
   }
 
@@ -45,12 +47,33 @@ $card-shadow: 0 1px 3px rgb(0 0 0 / 5%), rgb(0 0 0 / 5%) 0px 10px 15px -5px, rgb
       width: 100%;
     }
     .title {
-      padding: $marg-xl;
+      margin: $marg-xl $marg-xl $marg-sm;
       display: flex;
       align-items: center;
       justify-content: space-between;
       h5 {
         margin: 0px;
+      }
+    }
+    .content {
+      margin: 0 $marg-xl $marg-xl;
+      text-align: initial;
+      position: relative;
+
+      // for line clamp
+      display: -webkit-box;
+      -webkit-line-clamp: 5;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+
+      &::after {
+        content: "";
+        position: absolute;
+        right: 0px;
+        bottom: 0px;
+        height: calc($text-md * 1.5);
+        width: calc($text-md * 8.5);
+        background: linear-gradient(to right, transparent, white);
       }
     }
   }
@@ -91,14 +114,14 @@ $card-shadow: 0 1px 3px rgb(0 0 0 / 5%), rgb(0 0 0 / 5%) 0px 10px 15px -5px, rgb
 }
 
 .note {
-  height: calc(100vh - 46px);
-  margin-block: -#{$marg-lg};
+  height: calc(100vh - $header-height);
   padding: $marg-xl;
   border-left: $border;
-  // width: $note-width;
+  overflow: auto;
   // transition: width 500ms ease-in-out;
 
   &-hidden {
+    display: none;
     width: 0px;
     opacity: 0;
     // transition: width 250ms ease-in-out;
