@@ -17,6 +17,8 @@ $card-shadow: 0 1px 3px rgb(0 0 0 / 5%), rgb(0 0 0 / 5%) 0px 10px 15px -5px, rgb
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: $marg-lg;
+  padding: $marg-xl;
+  overflow: auto;
 
   h5 {
     margin-top: $marg-md;
@@ -112,14 +114,14 @@ $card-shadow: 0 1px 3px rgb(0 0 0 / 5%), rgb(0 0 0 / 5%) 0px 10px 15px -5px, rgb
 }
 
 .note {
-  height: calc(100vh - 46px);
-  margin-block: -#{$marg-lg};
+  height: calc(100vh - $header-height);
   padding: $marg-xl;
   border-left: $border;
-  // width: $note-width;
+  overflow: auto;
   // transition: width 500ms ease-in-out;
 
   &-hidden {
+    display: none;
     width: 0px;
     opacity: 0;
     // transition: width 250ms ease-in-out;
